@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Batteriestatus</class>
+ <widget class="QDialog" name="Batteriestatus">
+  <property name="enabled">
+   <bool>true</bool>
+  </property>
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>738</width>
+    <height>173</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Batterie Status</string>
+  </property>
+  <property name="autoFillBackground">
+   <bool>false</bool>
+  </property>
+  <property name="inputMethodHints">
+   <set>Qt::ImhNone</set>
+  </property>
+  <property name="modal">
+   <bool>false</bool>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="0">
+    <layout class="QVBoxLayout" name="verticalLayout">
+     <item>
+      <widget class="QLabel" name="statusAusgabe">
+       <property name="font">
+        <font>
+         <pointsize>29</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>Die Batterie hat noch 20% Ladung</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <item>
+        <widget class="QWidget" name="horizontalWidget_2" native="true">
+         <layout class="QHBoxLayout" name="horizontalLayout_4"/>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="buttonExit">
+         <property name="text">
+          <string>Ok</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QWidget" name="horizontalWidget_3" native="true">
+         <layout class="QHBoxLayout" name="horizontalLayout_5"/>
+        </widget>
+       </item>
+      </layout>
+     </item>
+    </layout>
+   </item>
+  </layout>
+  <zorder>horizontalLayoutWidget</zorder>
+  <zorder>verticalLayoutWidget</zorder>
+  <zorder>statusAusgabe</zorder>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

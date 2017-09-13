@@ -21,7 +21,7 @@ class Batteriestatus(QtWidgets.QDialog):
     #print(len(tmpBildschirmAufloesung))
     #print(tmpBildschirmAufloesung)
 
-
+    dateiBatterieStatus = "/sys/class/power_supply/BAT0/capacity"
 
     if len(tmpBildschirmAufloesung) > 2:
         getBildschimAufloesung = tmpBildschirmAufloesung[len(tmpBildschirmAufloesung) -1]
@@ -67,10 +67,10 @@ class Batteriestatus(QtWidgets.QDialog):
 
     def getBatterieStatus(self):
         # Variable initialisieren
-        dateiBatterieStatus = "/sys/class/power_supply/BAT0/capacity"
+        #dateiBatterieStatus = "/sys/class/power_supply/BAT0/capacity"
 
         # Read Batterie charge
-        fobj = open(dateiBatterieStatus, 'r')
+        fobj = open(self.dateiBatterieStatus, 'r')
         for line in fobj:
             setBatterieStatusInGui = line.rstrip()
         fobj.close()

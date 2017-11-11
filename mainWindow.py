@@ -4,7 +4,12 @@ import sys
 from PyQt5 import uic, QtCore, QtWidgets, Qt
 from PyQt5.QtCore import Qt
 import os
+from datetime import date
 
+"""
+TODOS:
+    - Alle benötigten Infos aus einer INI Datei lesen / schreiben
+"""
 
 class Batteriestatus(QtWidgets.QDialog):
     # Variable initialisieren
@@ -23,6 +28,7 @@ class Batteriestatus(QtWidgets.QDialog):
 
     dateiBatterieStatus = "/sys/class/power_supply/BAT0/capacity"
 
+
     if len(tmpBildschirmAufloesung) > 2:
         getBildschimAufloesung = tmpBildschirmAufloesung[len(tmpBildschirmAufloesung) -1]
     else:
@@ -30,10 +36,10 @@ class Batteriestatus(QtWidgets.QDialog):
 
 
     def __init__(self, parent=None):
+        self.checkLastScriptRun()
         super().__init__(parent)
         self.ui = uic.loadUi(self.pwd + "/main.ui", self)
         #self.ui = uic.loadUi(self.this_file_path + "/main.ui", self)
-
 
         # Create Slot
         self.ui.buttonExit.clicked.connect(self.pushExit)
@@ -44,7 +50,7 @@ class Batteriestatus(QtWidgets.QDialog):
         getDesktopResolutionHeight = getDesktopResolution[1]
 
         # Set window position on top
-        print(int(getDesktopResolutionHeight) / 2)
+        #print(int(getDesktopResolutionHeight) / 2)
 
         # Fenster Breite auf die gesamte Bildschirmbreite erweitern
         self.setFixedWidth(int(getDesktopResolutionWidth))
@@ -77,6 +83,33 @@ class Batteriestatus(QtWidgets.QDialog):
 
         return setBatterieStatusInGui
 
+    # Es wird geprüft, wann das Skript das letztes mal gestartet wurde.
+    def checkLastScriptRun(self):
+        getBATOcapacity = self.getBatterieStatus()
+        getLastBATOcapacityToRunScript = self.pwd + "/lastBATOcapacity"
+        getToday = date.today()
+
+        if os.path.isfile(getLastBATOcapacityToRunScript):
+            #print('Exist\n' + getLastBATOcapacityToRunScript)
+            #lastBATOcapacity = "lastBATOcapacity"
+            statusFile = open(getLastBATOcapacityToRunScript, "r+")
+            getLastBATOcapacityFile = statusFile.read().split(',')
+            getLastBATOcapacity = getLastBATOcapacityFile[0]
+            print(getLastBATOcapacity + "\n" + self.getBatterieStatus())
+            if (int(getLastBATOcapacity)) == int(getBATOcapacity):
+                print('gleich')
+                sys.exit(app.exec_())
+            else:
+                print('ungleich')
+
+            statusFile.close()
+        else:
+            print("Error")
+            statusFile = open(getLastBATOcapacityToRunScript, "w")
+            statusFile.write(getBATOcapacity + "," + str(getToday).replace('-', ''))
+            statusFile.close()
+
+
     def getScriptDir():
         fixed_value = 'test_get_script_path.py'
         this_file = os.path.abspath(__file__)
@@ -90,8 +123,8 @@ class Batteriestatus(QtWidgets.QDialog):
         sys.exit(app.exec_())
 
 
-
-app = QtWidgets.QApplication(sys.argv)
-dialog = Batteriestatus()
-dialog.show()
-sys.exit(app.exec_())
+if __name__ == "__main__":
+    app = QtWidgets.QApplication(sys.argv)
+    dialog = Batteriestatus()
+    dialog.show()
+    sys.exit(app.exec_())

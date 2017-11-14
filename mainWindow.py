@@ -113,6 +113,8 @@ class Batteriestatus(QtWidgets.QDialog, configuration):
         getLastBATOcapacityToRunScript = self.pwd + "/lastBATOcapacity"
         getToday = date.today()
 
+        configuration.setConfigData(self, getToday)
+
         if os.path.isfile(getLastBATOcapacityToRunScript):
             #print('Exist\n' + getLastBATOcapacityToRunScript)
             #lastBATOcapacity = "lastBATOcapacity"

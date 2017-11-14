@@ -5,13 +5,38 @@ from PyQt5 import uic, QtCore, QtWidgets, Qt
 from PyQt5.QtCore import Qt
 import os
 from datetime import date
+import configparser
 
 """
 TODOS:
     - Alle benötigten Infos aus einer INI Datei lesen / schreiben
 """
 
-class Batteriestatus(QtWidgets.QDialog):
+class configuration():
+    config = configparser.ConfigParser()
+
+    def __init__(self, getDay=None, getTime=None, getCount=None):
+        self.getDay = getDay
+        self.getTime = getTime
+        self.getCount = getCount
+
+
+    def setConfigData(self, getDay):
+        type(self).config['lastProgrammRun'] = {'day':getDay,
+                                                'time':'19:00',
+                                                'count':1}
+
+        with open('config', 'w') as configfile:
+            type(self).config.write(configfile)
+
+    def getConfigData(self):
+        type(self).config.read('config')
+        type(self).getDay = type(self).config.get('lastProgrammRun', 'day')
+        type(self).getTime =  type(self).config.get('lastProgrammRun', 'time')
+        type(self).getCount =  type(self).config.get('lastProgrammRun', 'count')
+        print(type(self).getDay)
+
+class Batteriestatus(QtWidgets.QDialog, configuration):
     # Variable initialisieren
     #pwd = os.getcwd()
 
@@ -28,7 +53,6 @@ class Batteriestatus(QtWidgets.QDialog):
 
     dateiBatterieStatus = "/sys/class/power_supply/BAT0/capacity"
 
-
     if len(tmpBildschirmAufloesung) > 2:
         getBildschimAufloesung = tmpBildschirmAufloesung[len(tmpBildschirmAufloesung) -1]
     else:
@@ -36,6 +60,7 @@ class Batteriestatus(QtWidgets.QDialog):
 
 
     def __init__(self, parent=None):
+        config = configuration("", "", '')
         self.checkLastScriptRun()
         super().__init__(parent)
         self.ui = uic.loadUi(self.pwd + "/main.ui", self)
@@ -69,7 +94,6 @@ class Batteriestatus(QtWidgets.QDialog):
 
         # Set button "buttonExit" Color
         self.buttonExit.setStyleSheet("background-color: black; color: white")
-
 
     def getBatterieStatus(self):
         # Variable initialisieren

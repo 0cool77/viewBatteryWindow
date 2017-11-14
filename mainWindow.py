@@ -60,7 +60,6 @@ class Batteriestatus(QtWidgets.QDialog, configuration):
 
 
     def __init__(self, parent=None):
-        config = configuration("", "", '')
         self.checkLastScriptRun()
         super().__init__(parent)
         self.ui = uic.loadUi(self.pwd + "/main.ui", self)

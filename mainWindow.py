@@ -9,7 +9,17 @@ import configparser
 
 """
 TODOS:
-    - Alle benötigten Infos aus einer INI Datei lesen / schreiben
+    - [i] Alle benötigten Infos aus einer INI Datei lesen / schreiben
+        - [] In die INI Datei aufzunehmende Werte
+            - [] Batteriestatus (geladen / entladen)
+            - [] letzte Batterieladung 
+        - [] Alle Texte aufnehmen
+        - [] Fenster Hintergrund Fabe
+        - [] Button
+            - [] Hintergrund Farbe
+            - [] Schrift Farbe    
+
+       
 """
 
 class configuration():

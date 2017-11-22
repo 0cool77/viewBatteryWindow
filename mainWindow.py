@@ -11,8 +11,8 @@ import configparser
 TODOS:
     - [i] Alle benötigten Infos aus einer INI Datei lesen / schreiben
         - [] In die INI Datei aufzunehmende Werte
-            - [] Batteriestatus (geladen / entladen)
-            - [] letzte Batterieladung 
+            - [x] Batteriestatus (geladen / entladen)
+            - [x] Batterieladung
         - [] Alle Texte aufnehmen
         - [] Fenster Hintergrund Fabe
         - [] Button
@@ -25,16 +25,18 @@ TODOS:
 class configuration():
     config = configparser.ConfigParser()
 
-    def __init__(self, getDay=None, getTime=None, getCount=None):
-        self.getDay = getDay
-        self.getTime = getTime
-        self.getCount = getCount
+    def __init__(self):
+        pass
 
+    def setConfigData(self, section, key, data):
+        #type(self).config['lastProgrammRun'] = {'day':getDay,
+        #                                        'time':'19:00',
+        #                                        'count':1,
+        #                                        'batteiestate':'entladen',
+        #                                        'batterieladung':'Prozent'}
 
-    def setConfigData(self, getDay):
-        type(self).config['lastProgrammRun'] = {'day':getDay,
-                                                'time':'19:00',
-                                                'count':1}
+        type(self).config["'" + section + "'"] = {"'" + key + "'":"'" + data + "'",
+                                      'text2':''}
 
         with open('config', 'w') as configfile:
             type(self).config.write(configfile)
@@ -44,6 +46,8 @@ class configuration():
         type(self).getDay = type(self).config.get('lastProgrammRun', 'day')
         type(self).getTime =  type(self).config.get('lastProgrammRun', 'time')
         type(self).getCount =  type(self).config.get('lastProgrammRun', 'count')
+        type(self).getText1 = type(self).config.get('texte', 'text1')
+
         print(type(self).getDay)
 
 class Batteriestatus(QtWidgets.QDialog, configuration):
@@ -70,6 +74,9 @@ class Batteriestatus(QtWidgets.QDialog, configuration):
 
 
     def __init__(self, parent=None):
+        configuration.__init__(self)
+        configuration.getConfigData(self)
+
         self.checkLastScriptRun()
         super().__init__(parent)
         self.ui = uic.loadUi(self.pwd + "/main.ui", self)
@@ -122,7 +129,7 @@ class Batteriestatus(QtWidgets.QDialog, configuration):
         getLastBATOcapacityToRunScript = self.pwd + "/lastBATOcapacity"
         getToday = date.today()
 
-        configuration.setConfigData(self, getToday)
+        configuration.setConfigData(self, section="lastprogrammRun", key="time", data="2017-11-20")
 
         if os.path.isfile(getLastBATOcapacityToRunScript):
             #print('Exist\n' + getLastBATOcapacityToRunScript)
@@ -162,4 +169,7 @@ if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
     dialog = Batteriestatus()
     dialog.show()
+
+    print("Count: " + dialog.getCount)
+
     sys.exit(app.exec_())

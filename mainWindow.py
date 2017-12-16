@@ -65,7 +65,8 @@ class Batteriestatus(QtWidgets.QDialog, configuration):
     #print(len(tmpBildschirmAufloesung))
     #print(tmpBildschirmAufloesung)
 
-    dateiBatterieStatus = "/sys/class/power_supply/BAT0/capacity"
+    fileBATOcapacity = "/sys/class/power_supply/BAT0/capacity"
+    fileBATOstate = "/sys/class/power_supply/BAT0/status"
 
     if len(tmpBildschirmAufloesung) > 2:
         getBildschimAufloesung = tmpBildschirmAufloesung[len(tmpBildschirmAufloesung) -1]
@@ -100,7 +101,7 @@ class Batteriestatus(QtWidgets.QDialog, configuration):
         self.setWindowFlags(QtCore.Qt.CustomizeWindowHint)
 
         # Set label Text "statusAusgabe"
-        self.statusAusgabe.setText("<font color='white'>Die Batterie hat noch " + str(self.getBatterieStatus()) + "% Ladung</font>")
+        self.statusAusgabe.setText("<font color='white'>Die Batterie hat noch " + str(self.getBATOcapacity()) + "% Ladung</font>")
 
         # Set window background color
         self.setAutoFillBackground(True)
@@ -111,21 +112,27 @@ class Batteriestatus(QtWidgets.QDialog, configuration):
         # Set button "buttonExit" Color
         self.buttonExit.setStyleSheet("background-color: black; color: white")
 
-    def getBatterieStatus(self):
-        # Variable initialisieren
-        #dateiBatterieStatus = "/sys/class/power_supply/BAT0/capacity"
-
-        # Read Batterie charge
-        fobj = open(self.dateiBatterieStatus, 'r')
+    def getBATOstate(self):
+        fobj = open(self.fileBATOstate, 'r')
         for line in fobj:
-            setBatterieStatusInGui = line.rstrip()
+            BATOstate = line.rstrip()
         fobj.close()
 
-        return setBatterieStatusInGui
+    def getBATOcapacity(self):
+        # Variable initialisieren
+        #fileBATOcapacity = "/sys/class/power_supply/BAT0/capacity"
+
+        # Read Batterie charge
+        fobj = open(self.fileBATOcapacity, 'r')
+        for line in fobj:
+            setBATOcapacityInGui = line.rstrip()
+        fobj.close()
+
+        return setBATOcapacityInGui
 
     # Es wird geprüft, wann das Skript das letztes mal gestartet wurde.
     def checkLastScriptRun(self):
-        getBATOcapacity = self.getBatterieStatus()
+        getBATOcapacity = self.getBATOcapacity()
         getLastBATOcapacityToRunScript = self.pwd + "/lastBATOcapacity"
         getToday = date.today()
 
@@ -137,7 +144,7 @@ class Batteriestatus(QtWidgets.QDialog, configuration):
             statusFile = open(getLastBATOcapacityToRunScript, "r+")
             getLastBATOcapacityFile = statusFile.read().split(',')
             getLastBATOcapacity = getLastBATOcapacityFile[0]
-            print(getLastBATOcapacity + "\n" + self.getBatterieStatus())
+            print(getLastBATOcapacity + "\n" + self.getBATOcapacity())
             if (int(getLastBATOcapacity)) == int(getBATOcapacity):
                 print('gleich')
                 sys.exit(app.exec_())

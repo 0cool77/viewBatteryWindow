@@ -5,14 +5,14 @@ from PyQt5 import uic, QtCore, QtWidgets, Qt
 from PyQt5.QtCore import Qt
 import os
 from datetime import date
-import configparser
 
 """
 TODOS:
-    - [i] Alle benötigten Infos aus einer INI Datei lesen / schreiben
-        - [] In die INI Datei aufzunehmende Werte
-            - [x] Batteriestatus (geladen / entladen)
-            - [x] Batterieladung
+    - [] Alle benötigten Infos werden aus einer SQLite3 DB gelesen oder geschrieben
+        - [] In die SQLite3 DB aufzunehmende Werte
+            - [] Batteriestatus (geladen / entladen)
+            - [] Batterie Kapazität
+            - [] Programm PID
         - [] Alle Texte aufnehmen
         - [] Fenster Hintergrund Fabe
         - [] Button
@@ -23,32 +23,15 @@ TODOS:
 """
 
 class configuration():
-    config = configparser.ConfigParser()
 
     def __init__(self):
         pass
 
-    def setConfigData(self, section, key, data):
-        #type(self).config['lastProgrammRun'] = {'day':getDay,
-        #                                        'time':'19:00',
-        #                                        'count':1,
-        #                                        'batteiestate':'entladen',
-        #                                        'batterieladung':'Prozent'}
-
-        type(self).config["'" + section + "'"] = {"'" + key + "'":"'" + data + "'",
-                                      'text2':''}
-
-        with open('config', 'w') as configfile:
-            type(self).config.write(configfile)
+    def setConfigData(self, section, key, value):
+        pass
 
     def getConfigData(self):
-        type(self).config.read('config')
-        type(self).getDay = type(self).config.get('lastProgrammRun', 'day')
-        type(self).getTime =  type(self).config.get('lastProgrammRun', 'time')
-        type(self).getCount =  type(self).config.get('lastProgrammRun', 'count')
-        type(self).getText1 = type(self).config.get('texte', 'text1')
-
-        print(type(self).getDay)
+        pass
 
 class Batteriestatus(QtWidgets.QDialog, configuration):
     # Variable initialisieren
@@ -76,7 +59,6 @@ class Batteriestatus(QtWidgets.QDialog, configuration):
 
     def __init__(self, parent=None):
         configuration.__init__(self)
-        configuration.getConfigData(self)
 
         self.checkLastScriptRun()
         super().__init__(parent)
@@ -112,6 +94,9 @@ class Batteriestatus(QtWidgets.QDialog, configuration):
         # Set button "buttonExit" Color
         self.buttonExit.setStyleSheet("background-color: black; color: white")
 
+        # Programm PID in die Config Datei schreiben
+        configuration.setConfigData(self, section='programmInfo', key='programmpid', value=str(os.getpid()))
+
     def getBATOstate(self):
         fobj = open(self.fileBATOstate, 'r')
         for line in fobj:
@@ -128,15 +113,17 @@ class Batteriestatus(QtWidgets.QDialog, configuration):
             setBATOcapacityInGui = line.rstrip()
         fobj.close()
 
+
         return setBATOcapacityInGui
 
     # Es wird geprüft, wann das Skript das letztes mal gestartet wurde.
     def checkLastScriptRun(self):
+        lastProgrammRun = {}
         getBATOcapacity = self.getBATOcapacity()
         getLastBATOcapacityToRunScript = self.pwd + "/lastBATOcapacity"
         getToday = date.today()
 
-        configuration.setConfigData(self, section="lastprogrammRun", key="time", data="2017-11-20")
+        lastProgrammRun.update({'time' : str(getToday)})
 
         if os.path.isfile(getLastBATOcapacityToRunScript):
             #print('Exist\n' + getLastBATOcapacityToRunScript)
@@ -144,7 +131,9 @@ class Batteriestatus(QtWidgets.QDialog, configuration):
             statusFile = open(getLastBATOcapacityToRunScript, "r+")
             getLastBATOcapacityFile = statusFile.read().split(',')
             getLastBATOcapacity = getLastBATOcapacityFile[0]
-            print(getLastBATOcapacity + "\n" + self.getBATOcapacity())
+
+            lastProgrammRun.update({'batterieentladung' : getLastBATOcapacity})
+            #print(getLastBATOcapacity + "\n" + self.getBATOcapacity())
             if (int(getLastBATOcapacity)) == int(getBATOcapacity):
                 print('gleich')
                 sys.exit(app.exec_())
@@ -177,6 +166,6 @@ if __name__ == "__main__":
     dialog = Batteriestatus()
     dialog.show()
 
-    print("Count: " + dialog.getCount)
+    #print("Count: " + dialog.getCount)
 
     sys.exit(app.exec_())

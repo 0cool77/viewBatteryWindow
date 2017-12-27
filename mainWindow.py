@@ -5,14 +5,16 @@ from PyQt5 import uic, QtCore, QtWidgets, Qt
 from PyQt5.QtCore import Qt
 import os
 from datetime import date
+import sqlite3
 
 """
 TODOS:
     - [] Alle benötigten Infos werden aus einer SQLite3 DB gelesen oder geschrieben
         - [] In die SQLite3 DB aufzunehmende Werte
+            - [] aktueller Tag
             - [] Batteriestatus (geladen / entladen)
             - [] Batterie Kapazität
-            - [] Programm PID
+            - [x] Programm PID
         - [] Alle Texte aufnehmen
         - [] Fenster Hintergrund Fabe
         - [] Button
@@ -23,14 +25,71 @@ TODOS:
 """
 
 class configuration():
+    configDB = 'config.db'
 
     def __init__(self):
         pass
 
-    def setConfigData(self, section, key, value):
-        pass
+    def createDB(self, db):
+        connection = sqlite3.connect(db)
 
-    def getConfigData(self):
+        cursor = connection.cursor()
+
+
+        sql_command = """
+        CREATE TABLE IF NOT EXISTS config ( 
+        id INTEGER PRIMARY KEY, 
+        section VARCHAR(20), 
+        key VARCHAR(30), 
+        value CHAR(50));"""
+
+        cursor.execute(sql_command)
+
+        connection.commit()
+        connection.close()
+
+        # Set dafault value to table
+        self.setConfigData(self.configDB, section='programmInfo', key='programmPID', value='0')
+        self.setConfigData(self.configDB, section='lastProgrammRun', key='today', value='getToday')
+        self.setConfigData(self.configDB, section='lastProgrammRun', key='batoState', value='entladen')
+        self.setConfigData(self.configDB, section='lastProgrammRun', key='batoCapacity', value='0')
+
+    def setConfigData(self, db, section, key, value):
+        connection = sqlite3.connect(db)
+
+        cursor = connection.cursor()
+
+        sql_command = """INSERT INTO config (
+                            id, 
+                            section, 
+                            key,
+                            value
+                        )
+                        VALUES (
+                            NULL,
+                            '""" + section + """',
+                            '""" + key + """',
+                            '""" + value + """'
+                        );
+                    """
+        cursor.execute(sql_command)
+        connection.commit()
+        connection.close()
+
+    def setDataUpdateFromTable(self, db, table, section, key, value):
+        print("DB: " + db + "\nTable: "+ table + "\nSection: " + section + "\nKey: " + key + "\nValue: " + value)
+        connection = sqlite3.connect(db)
+        cursor = connection.cursor()
+
+        sql_statment = "UPDATE " + table + " SET value  = '" + value + "' WHERE key = '" + key + "' AND  section = '" + section + "';"
+        print("SQL: " + sql_statment)
+
+        cursor.execute(sql_statment)
+
+        connection.commit()
+        connection.close()
+
+    def getConfigData(self, db, section, key, value):
         pass
 
 class Batteriestatus(QtWidgets.QDialog, configuration):
@@ -42,7 +101,7 @@ class Batteriestatus(QtWidgets.QDialog, configuration):
     this_file = os.path.abspath(__file__)
     pwd = os.path.dirname(this_file)
     #pwd = "/usr/local/bin/Batterieanzeige"
-
+    configDB = pwd + "/config.db"
 
     tmpBildschirmAufloesung = os.popen("/usr/bin/xrandr | grep -v disconnected | grep -A 1 connected | grep -v connected | awk '{print $1}'").readlines()
     #print(len(tmpBildschirmAufloesung))
@@ -59,6 +118,13 @@ class Batteriestatus(QtWidgets.QDialog, configuration):
 
     def __init__(self, parent=None):
         configuration.__init__(self)
+
+        # Write batterie state to db
+        self.getBATOstate()
+
+        # SQLite 3 DB für die Configuration erstellen
+        if not os.path.exists(self.configDB):
+            configuration.createDB(self, self.configDB)
 
         self.checkLastScriptRun()
         super().__init__(parent)
@@ -95,13 +161,16 @@ class Batteriestatus(QtWidgets.QDialog, configuration):
         self.buttonExit.setStyleSheet("background-color: black; color: white")
 
         # Programm PID in die Config Datei schreiben
-        configuration.setConfigData(self, section='programmInfo', key='programmpid', value=str(os.getpid()))
+        configuration.setDataUpdateFromTable(self, db=self.configDB, table="config", section='programmInfo', key='programmPID', value=str(os.getpid()))
 
     def getBATOstate(self):
         fobj = open(self.fileBATOstate, 'r')
         for line in fobj:
             BATOstate = line.rstrip()
         fobj.close()
+
+        # Set bato state to db
+        configuration.setDataUpdateFromTable(self, db=self.configDB, table="config", section='lastProgrammRun', key='batoState', value=str(BATOstate))
 
     def getBATOcapacity(self):
         # Variable initialisieren
@@ -113,6 +182,7 @@ class Batteriestatus(QtWidgets.QDialog, configuration):
             setBATOcapacityInGui = line.rstrip()
         fobj.close()
 
+        configuration.setDataUpdateFromTable(self, db=self.configDB, table="config", section='lastProgrammRun', key='batoCapacity', value=str(setBATOcapacityInGui))
 
         return setBATOcapacityInGui
 
@@ -124,6 +194,7 @@ class Batteriestatus(QtWidgets.QDialog, configuration):
         getToday = date.today()
 
         lastProgrammRun.update({'time' : str(getToday)})
+        configuration.setDataUpdateFromTable(self, db=self.configDB, table="config", section='lastProgrammRun', key='today', value=str(getToday))
 
         if os.path.isfile(getLastBATOcapacityToRunScript):
             #print('Exist\n' + getLastBATOcapacityToRunScript)
@@ -157,6 +228,9 @@ class Batteriestatus(QtWidgets.QDialog, configuration):
               % (fixed_value,this_file,this_file_path,working_directory))
 
     def pushExit(self):
+        # Set Programm PID value to 0
+        print(self.configDB)
+        self.setDataUpdateFromTable(db=self.configDB, table="config", section='programmInfo', key='programmPID', value='0')
         # Exit App with button "buttonExit"
         sys.exit(app.exec_())
 

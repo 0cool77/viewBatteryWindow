@@ -89,8 +89,18 @@ class configuration():
         connection.commit()
         connection.close()
 
-    def getConfigData(self, db, section, key, value):
-        pass
+
+    def getDataFromTable(self, db, table, section, key):
+        connection = sqlite3.connect(db)
+        cursor = connection.cursor()
+
+        cursor.execute("select * from " + table  + " where section = '" + section +"' and key = '" + key + "';")
+        result = cursor.fetchall()
+
+        for r in result:
+            print(r)
+
+        connection.close()
 
 class Batteriestatus(QtWidgets.QDialog, configuration):
     # Variable initialisieren

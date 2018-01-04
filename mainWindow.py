@@ -25,8 +25,6 @@ TODOS:
 """
 
 class configuration():
-    configDB = 'config.db'
-
     def __init__(self):
         pass
 
@@ -49,10 +47,10 @@ class configuration():
         connection.close()
 
         # Set dafault value to table
-        self.setConfigData(self.configDB, section='programmInfo', key='programmPID', value='0')
-        self.setConfigData(self.configDB, section='lastProgrammRun', key='today', value='getToday')
-        self.setConfigData(self.configDB, section='lastProgrammRun', key='batoState', value='entladen')
-        self.setConfigData(self.configDB, section='lastProgrammRun', key='batoCapacity', value='0')
+        self.setConfigData(db, section='programmInfo', key='programmPID', value='0')
+        self.setConfigData(db, section='lastProgrammRun', key='today', value='getToday')
+        self.setConfigData(db, section='lastProgrammRun', key='batoState', value='entladen')
+        self.setConfigData(db, section='lastProgrammRun', key='batoCapacity', value='0')
 
     def setConfigData(self, db, section, key, value):
         connection = sqlite3.connect(db)
@@ -94,7 +92,7 @@ class configuration():
         connection = sqlite3.connect(db)
         cursor = connection.cursor()
 
-        cursor.execute("select * from " + table  + " where section = '" + section +"' and key = '" + key + "';")
+        cursor.execute("select * from " + table  + " where section = '" + section + "' and key = '" + key + "';")
         result = cursor.fetchall()
 
         for r in result:

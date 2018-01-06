@@ -24,33 +24,45 @@ TODOS:
        
 """
 
+
 class configuration():
     def __init__(self):
         pass
 
     def createDB(self, db):
+
+        print("###########################################")
+        print("")
+        print("DB wird erstellt")
+
         connection = sqlite3.connect(db)
 
         cursor = connection.cursor()
-
 
         sql_command = """
         CREATE TABLE IF NOT EXISTS config ( 
         id INTEGER PRIMARY KEY, 
         section VARCHAR(20), 
         key VARCHAR(30), 
-        value CHAR(50));"""
+        value CHAR(50),
+        count INTEGER(2));"""
 
         cursor.execute(sql_command)
 
         connection.commit()
         connection.close()
 
+        print("DB wird befüllt")
+
         # Set dafault value to table
         self.setConfigData(db, section='programmInfo', key='programmPID', value='0')
         self.setConfigData(db, section='lastProgrammRun', key='today', value='getToday')
         self.setConfigData(db, section='lastProgrammRun', key='batoState', value='entladen')
         self.setConfigData(db, section='lastProgrammRun', key='batoCapacity', value='0')
+        self.setConfigData(db, section='programmInfo', key='count', value='0')
+
+        print("")
+        print("###########################################")
 
     def setConfigData(self, db, section, key, value):
         connection = sqlite3.connect(db)
@@ -75,7 +87,7 @@ class configuration():
         connection.close()
 
     def setDataUpdateFromTable(self, db, table, section, key, value):
-        print("DB: " + db + "\nTable: "+ table + "\nSection: " + section + "\nKey: " + key + "\nValue: " + value)
+        print("DB: " + db + "\nTable: " + table + "\nSection: " + section + "\nKey: " + key + "\nValue: " + value)
         connection = sqlite3.connect(db)
         cursor = connection.cursor()
 
@@ -87,12 +99,11 @@ class configuration():
         connection.commit()
         connection.close()
 
-
     def getDataFromTable(self, db, table, section, key):
         connection = sqlite3.connect(db)
         cursor = connection.cursor()
 
-        cursor.execute("select * from " + table  + " where section = '" + section + "' and key = '" + key + "';")
+        cursor.execute("select * from " + table + " where section = '" + section + "' and key = '" + key + "';")
         result = cursor.fetchall()
 
         for r in result:
@@ -100,44 +111,45 @@ class configuration():
 
         connection.close()
 
+
 class Batteriestatus(QtWidgets.QDialog, configuration):
     # Variable initialisieren
-    #pwd = os.getcwd()
+    # pwd = os.getcwd()
 
     # Get script dir
     fixed_value = 'test_get_script_path.py'
     this_file = os.path.abspath(__file__)
     pwd = os.path.dirname(this_file)
-    #pwd = "/usr/local/bin/Batterieanzeige"
+    # pwd = "/usr/local/bin/Batterieanzeige"
     configDB = pwd + "/config.db"
 
-    tmpBildschirmAufloesung = os.popen("/usr/bin/xrandr | grep -v disconnected | grep -A 1 connected | grep -v connected | awk '{print $1}'").readlines()
-    #print(len(tmpBildschirmAufloesung))
-    #print(tmpBildschirmAufloesung)
+    tmpBildschirmAufloesung = os.popen(
+        "/usr/bin/xrandr | grep -v disconnected | grep -A 1 connected | grep -v connected | awk '{print $1}'").readlines()
+    # print(len(tmpBildschirmAufloesung))
+    # print(tmpBildschirmAufloesung)
 
     fileBATOcapacity = "/sys/class/power_supply/BAT0/capacity"
     fileBATOstate = "/sys/class/power_supply/BAT0/status"
 
     if len(tmpBildschirmAufloesung) > 2:
-        getBildschimAufloesung = tmpBildschirmAufloesung[len(tmpBildschirmAufloesung) -1]
+        getBildschimAufloesung = tmpBildschirmAufloesung[len(tmpBildschirmAufloesung) - 1]
     else:
         getBildschimAufloesung = tmpBildschirmAufloesung[0]
-
 
     def __init__(self, parent=None):
         configuration.__init__(self)
 
-        # Write batterie state to db
-        self.getBATOstate()
-
-        # SQLite 3 DB für die Configuration erstellen
+        print(" ############# SQLite 3 DB für die Configuration erstellen ##################")
         if not os.path.exists(self.configDB):
             configuration.createDB(self, self.configDB)
+
+        # Write batterie state to db
+        self.getBATOstate()
 
         self.checkLastScriptRun()
         super().__init__(parent)
         self.ui = uic.loadUi(self.pwd + "/main.ui", self)
-        #self.ui = uic.loadUi(self.this_file_path + "/main.ui", self)
+        # self.ui = uic.loadUi(self.this_file_path + "/main.ui", self)
 
         # Create Slot
         self.ui.buttonExit.clicked.connect(self.pushExit)
@@ -148,7 +160,7 @@ class Batteriestatus(QtWidgets.QDialog, configuration):
         getDesktopResolutionHeight = getDesktopResolution[1]
 
         # Set window position on top
-        #print(int(getDesktopResolutionHeight) / 2)
+        # print(int(getDesktopResolutionHeight) / 2)
 
         # Fenster Breite auf die gesamte Bildschirmbreite erweitern
         self.setFixedWidth(int(getDesktopResolutionWidth))
@@ -157,7 +169,8 @@ class Batteriestatus(QtWidgets.QDialog, configuration):
         self.setWindowFlags(QtCore.Qt.CustomizeWindowHint)
 
         # Set label Text "statusAusgabe"
-        self.statusAusgabe.setText("<font color='white'>Die Batterie hat noch " + str(self.getBATOcapacity()) + "% Ladung</font>")
+        self.statusAusgabe.setText(
+            "<font color='white'>Die Batterie hat noch " + str(self.getBATOcapacity()) + "% Ladung</font>")
 
         # Set window background color
         self.setAutoFillBackground(True)
@@ -169,7 +182,8 @@ class Batteriestatus(QtWidgets.QDialog, configuration):
         self.buttonExit.setStyleSheet("background-color: black; color: white")
 
         # Programm PID in die Config Datei schreiben
-        configuration.setDataUpdateFromTable(self, db=self.configDB, table="config", section='programmInfo', key='programmPID', value=str(os.getpid()))
+        configuration.setDataUpdateFromTable(self, db=self.configDB, table="config", section='programmInfo',
+                                             key='programmPID', value=str(os.getpid()))
 
     def getBATOstate(self):
         fobj = open(self.fileBATOstate, 'r')
@@ -178,11 +192,12 @@ class Batteriestatus(QtWidgets.QDialog, configuration):
         fobj.close()
 
         # Set bato state to db
-        configuration.setDataUpdateFromTable(self, db=self.configDB, table="config", section='lastProgrammRun', key='batoState', value=str(BATOstate))
+        configuration.setDataUpdateFromTable(self, db=self.configDB, table="config", section='lastProgrammRun',
+                                             key='batoState', value=str(BATOstate))
 
     def getBATOcapacity(self):
         # Variable initialisieren
-        #fileBATOcapacity = "/sys/class/power_supply/BAT0/capacity"
+        # fileBATOcapacity = "/sys/class/power_supply/BAT0/capacity"
 
         # Read Batterie charge
         fobj = open(self.fileBATOcapacity, 'r')
@@ -190,7 +205,8 @@ class Batteriestatus(QtWidgets.QDialog, configuration):
             setBATOcapacityInGui = line.rstrip()
         fobj.close()
 
-        configuration.setDataUpdateFromTable(self, db=self.configDB, table="config", section='lastProgrammRun', key='batoCapacity', value=str(setBATOcapacityInGui))
+        configuration.setDataUpdateFromTable(self, db=self.configDB, table="config", section='lastProgrammRun',
+                                             key='batoCapacity', value=str(setBATOcapacityInGui))
 
         return setBATOcapacityInGui
 
@@ -201,18 +217,19 @@ class Batteriestatus(QtWidgets.QDialog, configuration):
         getLastBATOcapacityToRunScript = self.pwd + "/lastBATOcapacity"
         getToday = date.today()
 
-        lastProgrammRun.update({'time' : str(getToday)})
-        configuration.setDataUpdateFromTable(self, db=self.configDB, table="config", section='lastProgrammRun', key='today', value=str(getToday))
+        lastProgrammRun.update({'time': str(getToday)})
+        configuration.setDataUpdateFromTable(self, db=self.configDB, table="config", section='lastProgrammRun',
+                                             key='today', value=str(getToday))
 
         if os.path.isfile(getLastBATOcapacityToRunScript):
-            #print('Exist\n' + getLastBATOcapacityToRunScript)
-            #lastBATOcapacity = "lastBATOcapacity"
+            # print('Exist\n' + getLastBATOcapacityToRunScript)
+            # lastBATOcapacity = "lastBATOcapacity"
             statusFile = open(getLastBATOcapacityToRunScript, "r+")
             getLastBATOcapacityFile = statusFile.read().split(',')
             getLastBATOcapacity = getLastBATOcapacityFile[0]
 
-            lastProgrammRun.update({'batterieentladung' : getLastBATOcapacity})
-            #print(getLastBATOcapacity + "\n" + self.getBATOcapacity())
+            lastProgrammRun.update({'batterieentladung': getLastBATOcapacity})
+            # print(getLastBATOcapacity + "\n" + self.getBATOcapacity())
             if (int(getLastBATOcapacity)) == int(getBATOcapacity):
                 print('gleich')
                 sys.exit(app.exec_())
@@ -226,19 +243,19 @@ class Batteriestatus(QtWidgets.QDialog, configuration):
             statusFile.write(getBATOcapacity + "," + str(getToday).replace('-', ''))
             statusFile.close()
 
-
     def getScriptDir():
         fixed_value = 'test_get_script_path.py'
         this_file = os.path.abspath(__file__)
         this_file_path = os.path.dirname(this_file)
         working_directory = os.getcwd()
         print(('Fester Wert: %s\nScriptpfad: %s\nScripterzeichnis: %s\nCWD: %s')
-              % (fixed_value,this_file,this_file_path,working_directory))
+              % (fixed_value, this_file, this_file_path, working_directory))
 
     def pushExit(self):
         # Set Programm PID value to 0
         print(self.configDB)
-        self.setDataUpdateFromTable(db=self.configDB, table="config", section='programmInfo', key='programmPID', value='0')
+        self.setDataUpdateFromTable(db=self.configDB, table="config", section='programmInfo', key='programmPID',
+                                    value='0')
         # Exit App with button "buttonExit"
         sys.exit(app.exec_())
 
@@ -248,6 +265,6 @@ if __name__ == "__main__":
     dialog = Batteriestatus()
     dialog.show()
 
-    #print("Count: " + dialog.getCount)
+    # print("Count: " + dialog.getCount)
 
     sys.exit(app.exec_())

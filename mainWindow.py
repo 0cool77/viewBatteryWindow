@@ -31,9 +31,9 @@ class configuration():
 
     def createDB(self, db):
 
-        print("###########################################")
-        print("")
-        print("DB wird erstellt")
+        #print("###########################################")
+        #print("")
+        #print("DB wird erstellt")
 
         connection = sqlite3.connect(db)
 
@@ -52,7 +52,7 @@ class configuration():
         connection.commit()
         connection.close()
 
-        print("DB wird befüllt")
+        #print("DB wird befüllt")
 
         # Set dafault value to table
         self.setConfigData(db, section='programmInfo', key='programmPID', value='0')
@@ -61,8 +61,8 @@ class configuration():
         self.setConfigData(db, section='lastProgrammRun', key='batoCapacity', value='0')
         self.setConfigData(db, section='programmInfo', key='count', value='0')
 
-        print("")
-        print("###########################################")
+        #print("")
+        #print("###########################################")
 
     def setConfigData(self, db, section, key, value):
         connection = sqlite3.connect(db)
@@ -87,12 +87,12 @@ class configuration():
         connection.close()
 
     def setDataUpdateFromTable(self, db, table, section, key, value):
-        print("DB: " + db + "\nTable: " + table + "\nSection: " + section + "\nKey: " + key + "\nValue: " + value)
+        #print("DB: " + db + "\nTable: " + table + "\nSection: " + section + "\nKey: " + key + "\nValue: " + value)
         connection = sqlite3.connect(db)
         cursor = connection.cursor()
 
         sql_statment = "UPDATE " + table + " SET value  = '" + value + "' WHERE key = '" + key + "' AND  section = '" + section + "';"
-        print("SQL: " + sql_statment)
+        #print("SQL: " + sql_statment)
 
         cursor.execute(sql_statment)
 
@@ -106,8 +106,8 @@ class configuration():
         cursor.execute("select * from " + table + " where section = '" + section + "' and key = '" + key + "';")
         result = cursor.fetchall()
 
-        for r in result:
-            print(r)
+        #for r in result:
+            #print(r)
 
         connection.close()
 
@@ -139,12 +139,14 @@ class Batteriestatus(QtWidgets.QDialog, configuration):
     def __init__(self, parent=None):
         configuration.__init__(self)
 
-        print(" ############# SQLite 3 DB für die Configuration erstellen ##################")
+        #print(" ############# SQLite 3 DB für die Configuration erstellen ##################")
         if not os.path.exists(self.configDB):
             configuration.createDB(self, self.configDB)
 
         # Write batterie state to db
         self.getBATOstate()
+
+        #print("Bato Status: " + str(self.getDataFromTable(db=self.configDB, table='config', section='lastProgrammRun', key='batoState')))
 
         self.checkLastScriptRun()
         super().__init__(parent)
@@ -188,12 +190,12 @@ class Batteriestatus(QtWidgets.QDialog, configuration):
     def getBATOstate(self):
         fobj = open(self.fileBATOstate, 'r')
         for line in fobj:
-            BATOstate = line.rstrip()
+            #BATOstate = line.rstrip()
+            # Set bato state to db
+            configuration.setDataUpdateFromTable(self, db=self.configDB, table="config", section='lastProgrammRun',
+                                                 key='batoState', value=str(line.rstrip()))
         fobj.close()
 
-        # Set bato state to db
-        configuration.setDataUpdateFromTable(self, db=self.configDB, table="config", section='lastProgrammRun',
-                                             key='batoState', value=str(BATOstate))
 
     def getBATOcapacity(self):
         # Variable initialisieren
@@ -231,14 +233,14 @@ class Batteriestatus(QtWidgets.QDialog, configuration):
             lastProgrammRun.update({'batterieentladung': getLastBATOcapacity})
             # print(getLastBATOcapacity + "\n" + self.getBATOcapacity())
             if (int(getLastBATOcapacity)) == int(getBATOcapacity):
-                print('gleich')
+                #print('gleich')
                 sys.exit(app.exec_())
-            else:
-                print('ungleich')
+            #else:
+                #print('ungleich')
 
             statusFile.close()
         else:
-            print("Error")
+            #print("Error")
             statusFile = open(getLastBATOcapacityToRunScript, "w")
             statusFile.write(getBATOcapacity + "," + str(getToday).replace('-', ''))
             statusFile.close()
@@ -248,12 +250,12 @@ class Batteriestatus(QtWidgets.QDialog, configuration):
         this_file = os.path.abspath(__file__)
         this_file_path = os.path.dirname(this_file)
         working_directory = os.getcwd()
-        print(('Fester Wert: %s\nScriptpfad: %s\nScripterzeichnis: %s\nCWD: %s')
-              % (fixed_value, this_file, this_file_path, working_directory))
+        #print(('Fester Wert: %s\nScriptpfad: %s\nScripterzeichnis: %s\nCWD: %s')
+        #      % (fixed_value, this_file, this_file_path, working_directory))
 
     def pushExit(self):
         # Set Programm PID value to 0
-        print(self.configDB)
+        #print(self.configDB)
         self.setDataUpdateFromTable(db=self.configDB, table="config", section='programmInfo', key='programmPID',
                                     value='0')
         # Exit App with button "buttonExit"

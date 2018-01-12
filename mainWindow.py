@@ -144,7 +144,7 @@ class Batteriestatus(QtWidgets.QDialog, configuration):
             configuration.createDB(self, self.configDB)
 
         # Write batterie state to db
-        self.getBATOstate()
+        self.setBATOstate()
 
         #print("Bato Status: " + str(self.getDataFromTable(db=self.configDB, table='config', section='lastProgrammRun', key='batoState')))
 
@@ -187,7 +187,7 @@ class Batteriestatus(QtWidgets.QDialog, configuration):
         configuration.setDataUpdateFromTable(self, db=self.configDB, table="config", section='programmInfo',
                                              key='programmPID', value=str(os.getpid()))
 
-    def getBATOstate(self):
+    def setBATOstate(self):
         fobj = open(self.fileBATOstate, 'r')
         for line in fobj:
             #BATOstate = line.rstrip()

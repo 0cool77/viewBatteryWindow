@@ -147,6 +147,11 @@ class Batteriestatus(QtWidgets.QDialog, configuration):
         # Write batterie state to db
         self.setBATOstate()
 
+        BATOstate =  self.getDataFromTable(db=self.configDB, table='config', section='lastProgrammRun', key='batoState')
+        if not str(BATOstate[0][3]) == "Discharging":
+            print("Skript wird beendet.")
+            sys.exit()
+
         self.checkLastScriptRun()
         super().__init__(parent)
         self.ui = uic.loadUi(self.pwd + "/main.ui", self)

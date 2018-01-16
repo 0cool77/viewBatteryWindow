@@ -146,11 +146,9 @@ class Batteriestatus(QtWidgets.QDialog, configuration):
 
         # Write batterie state to db
         self.setBATOstate()
-
-        BATOstate =  self.getDataFromTable(db=self.configDB, table='config', section='lastProgrammRun', key='batoState')
-        if not str(BATOstate[0][3]) == "Discharging":
-            print("Skript wird beendet.")
-            sys.exit()
+         
+        # Check Skrip Abhängigkeiten
+        self.checkLastScriptRun()
 
         self.checkLastScriptRun()
         super().__init__(parent)
@@ -190,6 +188,12 @@ class Batteriestatus(QtWidgets.QDialog, configuration):
         # Programm PID in die Config Datei schreiben
         configuration.setDataUpdateFromTable(self, db=self.configDB, table="config", section='programmInfo',
                                              key='programmPID', value=str(os.getpid()))
+
+    def checkLastScriptRun(self):
+        BATOstate =  self.getDataFromTable(db=self.configDB, table='config', section='lastProgrammRun', key='batoState')
+        if not str(BATOstate[0][3]) == "Discharging":
+            print("Skript wird beendet.")
+            sys.exit()
 
     def setBATOstate(self):
         fobj = open(self.fileBATOstate, 'r')

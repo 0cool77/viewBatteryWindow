@@ -150,7 +150,7 @@ class Batteriestatus(QtWidgets.QDialog, configuration):
         # Check Skrip Abhängigkeiten
         self.checkScriptRun()
 
-        self.checkLastScriptRun()
+        #self.checkLastScriptRun()
         super().__init__(parent)
         self.ui = uic.loadUi(self.pwd + "/main.ui", self)
         # self.ui = uic.loadUi(self.this_file_path + "/main.ui", self)

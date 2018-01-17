@@ -150,7 +150,7 @@ class Batteriestatus(QtWidgets.QDialog, configuration):
         # Check Skrip Abhängigkeiten
         self.checkScriptRun()
 
-        self.checkScriptRun()
+        self.checkLastScriptRun()
         super().__init__(parent)
         self.ui = uic.loadUi(self.pwd + "/main.ui", self)
         # self.ui = uic.loadUi(self.this_file_path + "/main.ui", self)
@@ -221,7 +221,7 @@ class Batteriestatus(QtWidgets.QDialog, configuration):
         return setBATOcapacityInGui
 
     # Es wird geprüft, wann das Skript das letztes mal gestartet wurde.
-    def checkScriptRun(self):
+    def checkLastScriptRun(self):
         lastProgrammRun = {}
         getBATOcapacity = self.getBATOcapacity()
         getLastBATOcapacityToRunScript = self.pwd + "/lastBATOcapacity"

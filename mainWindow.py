@@ -196,13 +196,6 @@ class Batteriestatus(QtWidgets.QDialog, configuration):
         # PID aus DB auslesen um prüfen zu können ob das Script gerade läuft
         ScriptPIDinDB = self.getDataFromTable(db=self.configDB, table='config', section='programmInfo', key='programmPID')
 
-        # Prüfung ob das Script noch läuft
-        if str(ScriptPIDinDB[0][3]) == str(os.getpid()):
-           print("IF PID: " + str(ScriptPIDinDB[0][3]))
-           sys.exit()
-        else:
-            print("ELSE PID: " + str(ScriptPIDinDB[0][3]))
-
         # Mehrfache Skript Ausführung verhindern
         if len(subprocess.getoutput("ps -fC 'python3.6 mainWindow.py'").split()) > 17:
             print(len(subprocess.getoutput("ps -fC 'python3.6 mainWindow.py'").split()))
@@ -213,8 +206,6 @@ class Batteriestatus(QtWidgets.QDialog, configuration):
             # Programm PID in die Config DB schreiben
             configuration.setDataUpdateFromTable(self, db=self.configDB, table="config", section='programmInfo',
                                                  key='programmPID', value=str(os.getpid()))
-
-
 
     def setBATOstate(self):
         fobj = open(self.fileBATOstate, 'r')

@@ -6,6 +6,7 @@ from PyQt5.QtCore import Qt
 import os
 from datetime import date
 import sqlite3
+import subprocess
 
 """
 TODOS:
@@ -185,15 +186,35 @@ class Batteriestatus(QtWidgets.QDialog, configuration):
         # Set button "buttonExit" Color
         self.buttonExit.setStyleSheet("background-color: black; color: white")
 
-        # Programm PID in die Config Datei schreiben
-        configuration.setDataUpdateFromTable(self, db=self.configDB, table="config", section='programmInfo',
-                                             key='programmPID', value=str(os.getpid()))
 
     def checkScriptRun(self):
         BATOstate =  self.getDataFromTable(db=self.configDB, table='config', section='lastProgrammRun', key='batoState')
         if not str(BATOstate[0][3]) == "Discharging":
-            print("Skript wird beendet.")
+            print("Skript wird beendet.\nKeine Batterie Entladung")
             sys.exit()
+
+        # PID aus DB auslesen um prüfen zu können ob das Script gerade läuft
+        ScriptPIDinDB = self.getDataFromTable(db=self.configDB, table='config', section='programmInfo', key='programmPID')
+
+        # Prüfung ob das Script noch läuft
+        if str(ScriptPIDinDB[0][3]) == str(os.getpid()):
+           print("IF PID: " + str(ScriptPIDinDB[0][3]))
+           sys.exit()
+        else:
+            print("ELSE PID: " + str(ScriptPIDinDB[0][3]))
+
+        # Mehrfache Skript Ausführung verhindern
+        if len(subprocess.getoutput("ps -fC 'python3.6 mainWindow.py'").split()) > 17:
+            print(len(subprocess.getoutput("ps -fC 'python3.6 mainWindow.py'").split()))
+            sys.exit()
+
+        # prüfen ob die PID in der DB 0 ist
+        if str(ScriptPIDinDB[0][3]) == '0':
+            # Programm PID in die Config DB schreiben
+            configuration.setDataUpdateFromTable(self, db=self.configDB, table="config", section='programmInfo',
+                                                 key='programmPID', value=str(os.getpid()))
+
+
 
     def setBATOstate(self):
         fobj = open(self.fileBATOstate, 'r')

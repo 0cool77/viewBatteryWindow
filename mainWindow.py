@@ -234,36 +234,12 @@ class Batteriestatus(QtWidgets.QDialog, configuration):
 
     # Es wird geprüft, wann das Skript das letztes mal gestartet wurde.
     def checkLastScriptRun(self):
-        lastProgrammRun = {}
         getBATOcapacity = self.getBATOcapacity()
-        getLastBATOcapacityToRunScript = self.pwd + "/lastBATOcapacity"
         getToday = date.today()
 
-        lastProgrammRun.update({'time': str(getToday)})
         configuration.setDataUpdateFromTable(self, db=self.configDB, table="config", section='lastProgrammRun',
                                              key='today', value=str(getToday))
 
-        if os.path.isfile(getLastBATOcapacityToRunScript):
-            # print('Exist\n' + getLastBATOcapacityToRunScript)
-            # lastBATOcapacity = "lastBATOcapacity"
-            statusFile = open(getLastBATOcapacityToRunScript, "r+")
-            getLastBATOcapacityFile = statusFile.read().split(',')
-            getLastBATOcapacity = getLastBATOcapacityFile[0]
-
-            lastProgrammRun.update({'batterieentladung': getLastBATOcapacity})
-            # print(getLastBATOcapacity + "\n" + self.getBATOcapacity())
-            if (int(getLastBATOcapacity)) == int(getBATOcapacity):
-                #print('gleich')
-                sys.exit(app.exec_())
-            #else:
-                #print('ungleich')
-
-            statusFile.close()
-        else:
-            #print("Error")
-            statusFile = open(getLastBATOcapacityToRunScript, "w")
-            statusFile.write(getBATOcapacity + "," + str(getToday).replace('-', ''))
-            statusFile.close()
 
     def getScriptDir():
         fixed_value = 'test_get_script_path.py'

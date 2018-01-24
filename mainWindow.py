@@ -175,7 +175,7 @@ class Batteriestatus(QtWidgets.QDialog, configuration):
 
         # Set label Text "statusAusgabe"
         self.statusAusgabe.setText(
-            "<font color='white'>Die Batterie hat noch " + str(self.getBATOcapacity()) + "% Ladung</font>")
+            "<font color='white'>Die Batterie hat noch " + str(self.setBATOcapcity()) + "% Ladung</font>")
 
         # Set window background color
         self.setAutoFillBackground(True)
@@ -217,7 +217,7 @@ class Batteriestatus(QtWidgets.QDialog, configuration):
         fobj.close()
 
 
-    def getBATOcapacity(self):
+    def setBATOcapcity(self):
         # Variable initialisieren
         # fileBATOcapacity = "/sys/class/power_supply/BAT0/capacity"
 
@@ -234,7 +234,7 @@ class Batteriestatus(QtWidgets.QDialog, configuration):
 
     # Es wird geprüft, wann das Skript das letztes mal gestartet wurde.
     def checkLastScriptRun(self):
-        getBATOcapacity = self.getBATOcapacity()
+        setBATOcapcity = self.setBATOcapcity()
         getToday = date.today()
 
         configuration.setDataUpdateFromTable(self, db=self.configDB, table="config", section='lastProgrammRun',

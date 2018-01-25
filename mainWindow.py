@@ -147,7 +147,10 @@ class Batteriestatus(QtWidgets.QDialog, configuration):
 
         # Write batterie state to db
         self.setBATOstate()
-         
+
+        # Write BATO capacity to db
+        self.setBATOcapcity()
+
         # Check Skrip Abhängigkeiten
         self.checkScriptRun()
 
@@ -173,9 +176,14 @@ class Batteriestatus(QtWidgets.QDialog, configuration):
         # Set title to hint (verstecken)
         self.setWindowFlags(QtCore.Qt.CustomizeWindowHint)
 
+        # Get BATO capcity form db
+        self.BATOcapacity = configuration.getDataFromTable(self, self.configDB, table='config', section='lastProgrammRun',
+                                                           key='batoCapacity')
+
         # Set label Text "statusAusgabe"
         self.statusAusgabe.setText(
-            "<font color='white'>Die Batterie hat noch " + str(self.setBATOcapcity()) + "% Ladung</font>")
+            "<font color='white'>Die Batterie hat noch " + str(self.BATOcapacity[0][3]) + "% Ladung</font>")
+
 
         # Set window background color
         self.setAutoFillBackground(True)
@@ -224,13 +232,11 @@ class Batteriestatus(QtWidgets.QDialog, configuration):
         # Read Batterie charge
         fobj = open(self.fileBATOcapacity, 'r')
         for line in fobj:
-            setBATOcapacityInGui = line.rstrip()
+            setBATOcapacityInDB = line.rstrip()
         fobj.close()
 
         configuration.setDataUpdateFromTable(self, db=self.configDB, table="config", section='lastProgrammRun',
-                                             key='batoCapacity', value=str(setBATOcapacityInGui))
-
-        return setBATOcapacityInGui
+                                             key='batoCapacity', value=str(setBATOcapacityInDB))
 
     # Es wird geprüft, wann das Skript das letztes mal gestartet wurde.
     def checkLastScriptRun(self):

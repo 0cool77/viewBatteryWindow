@@ -10,11 +10,11 @@ import subprocess
 
 """
 TODOS:
-    - [] Alle benötigten Infos werden aus einer SQLite3 DB gelesen oder geschrieben
-        - [] In die SQLite3 DB aufzunehmende Werte
-            - [] aktueller Tag
-            - [] Batteriestatus (geladen / entladen)
-            - [] Batterie Kapazität
+        - [] Alle benötigten Infos werden aus einer SQLite3 DB gelesen oder geschrieben
+        - [x In die SQLite3 DB aufzunehmende Werte
+            - [x] aktueller Tag
+            - [x] Batteriestatus (geladen / entladen)
+            - [x] Batterie Kapazität
             - [x] Programm PID
         - [] Alle Texte aufnehmen
         - [] Fenster Hintergrund Fabe

@@ -209,8 +209,8 @@ class Batteriestatus(QtWidgets.QDialog, configuration):
         ScriptPIDinDB = self.getDataFromTable(db=self.configDB, table='config', section='programmInfo', key='programmPID')
 
         # Mehrfache Skript Ausführung verhindern
-        if len(subprocess.getoutput("ps -fC 'python3.6 mainWindow.py'").split()) > 17:
-            print(len(subprocess.getoutput("ps -fC 'python3.6 mainWindow.py'").split()))
+        if len(subprocess.getoutput("ps -fC 'python mainWindow.py'").split()) > 18:
+            print(len(subprocess.getoutput("ps -fC 'python mainWindow.py'").split()))
             sys.exit()
 
         # prüfen ob die PID in der DB 0 ist

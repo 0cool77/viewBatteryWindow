@@ -210,6 +210,8 @@ class Batteriestatus(QtWidgets.QDialog, configuration):
         if int(sys.argv[1]) <= int(BATOcapacity[0][3]):
             print("Batterie zu viel geladen: " + str(BATOcapacity[0][3]))
             sys.exit()
+
+        # PID aus DB auslesen
         ScriptPIDinDB = self.getDataFromTable(db=self.configDB, table='config', section='programmInfo', key='programmPID')
 
         # Mehrfache Skript Ausführung verhindern

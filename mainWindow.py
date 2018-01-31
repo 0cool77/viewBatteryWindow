@@ -202,6 +202,10 @@ class Batteriestatus(QtWidgets.QDialog, configuration):
             sys.exit()
 
         # PID aus DB auslesen um prüfen zu können ob das Script gerade läuft
+        # Prüfen ob ein Argument mitgegeben wurde das den Batterie Stand angibt der maximal sein darf, damit das Skript startet
+        if len(sys.argv) != 2:
+            print("example: \n\t" + sys.argv[0] + " Prozentzahl")
+            sys.exit()
         ScriptPIDinDB = self.getDataFromTable(db=self.configDB, table='config', section='programmInfo', key='programmPID')
 
         # Mehrfache Skript Ausführung verhindern

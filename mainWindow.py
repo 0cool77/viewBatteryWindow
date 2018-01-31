@@ -218,6 +218,12 @@ class Batteriestatus(QtWidgets.QDialog, configuration):
             configuration.setDataUpdateFromTable(self, db=self.configDB, table="config", section='programmInfo',
                                                  key='programmPID', value=str(os.getpid()))
 
+        # Prüfen ob die PID in der DB gleich der PID des Programmes ist
+        if str(ScriptPIDinDB[0][3]) != str(os.getpid()):
+            # Programm PID in die Config DB schreiben
+            configuration.setDataUpdateFromTable(self, db=self.configDB, table="config", section='programmInfo',
+                                                 key='programmPID', value=str(os.getpid()))
+
     def setBATOstate(self):
         fobj = open(self.fileBATOstate, 'r')
         for line in fobj:

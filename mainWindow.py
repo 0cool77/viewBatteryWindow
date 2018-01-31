@@ -206,9 +206,13 @@ class Batteriestatus(QtWidgets.QDialog, configuration):
         if len(sys.argv) != 2:
             print("example: \n\t" + sys.argv[0] + " Prozentzahl")
             sys.exit()
-        
-        if int(sys.argv[1]) <= int(BATOcapacity[0][3]):
-            print("Batterie zu viel geladen: " + str(BATOcapacity[0][3]))
+
+        try:        
+            if int(sys.argv[1]) <= int(BATOcapacity[0][3]):
+                print("Batterie zu viel geladen: " + str(BATOcapacity[0][3]))
+                sys.exit()
+        except ValueError:
+            print("Bitte geben Sie ein Zahl ein!")
             sys.exit()
 
         # PID aus DB auslesen

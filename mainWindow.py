@@ -197,6 +197,7 @@ class Batteriestatus(QtWidgets.QDialog, configuration):
 
     def checkScriptRun(self):
         BATOstate =  self.getDataFromTable(db=self.configDB, table='config', section='lastProgrammRun', key='batoState')
+        BATOcapacity = self.getDataFromTable(db=self.configDB, table='config', section='lastProgrammRun', key='batoCapacity') 
         if not str(BATOstate[0][3]) == "Discharging":
             print("Skript wird beendet.\nKeine Batterie Entladung")
             sys.exit()
@@ -204,6 +205,10 @@ class Batteriestatus(QtWidgets.QDialog, configuration):
         # Prüfen ob ein Argument mitgegeben wurde das den Batterie Stand angibt der maximal sein darf, damit das Skript startet
         if len(sys.argv) != 2:
             print("example: \n\t" + sys.argv[0] + " Prozentzahl")
+            sys.exit()
+        
+        if int(sys.argv[1]) <= int(BATOcapacity[0][3]):
+            print("Batterie zu viel geladen: " + str(BATOcapacity[0][3]))
             sys.exit()
         ScriptPIDinDB = self.getDataFromTable(db=self.configDB, table='config', section='programmInfo', key='programmPID')
 

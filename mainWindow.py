@@ -198,6 +198,9 @@ class Batteriestatus(QtWidgets.QDialog, configuration):
     def checkScriptRun(self):
         BATOstate =  self.getDataFromTable(db=self.configDB, table='config', section='lastProgrammRun', key='batoState')
         BATOcapacity = self.getDataFromTable(db=self.configDB, table='config', section='lastProgrammRun', key='batoCapacity') 
+        fileName = __file__.split('/')
+        fileName = fileName[len(fileName)-1]
+
         if not str(BATOstate[0][3]) == "Discharging":
             print("Skript wird beendet.\nKeine Batterie Entladung")
             sys.exit()
@@ -219,8 +222,12 @@ class Batteriestatus(QtWidgets.QDialog, configuration):
         ScriptPIDinDB = self.getDataFromTable(db=self.configDB, table='config', section='programmInfo', key='programmPID')
 
         # Mehrfache Skript Ausführung verhindern
-        if len(subprocess.getoutput("ps -fC 'python mainWindow.py'").split()) > 18:
-            print(len(subprocess.getoutput("ps -fC 'python mainWindow.py'").split()))
+        if len(subprocess.getoutput("ps -fC 'python " + fileName  + "'").split()) > 18:
+            print(len(subprocess.getoutput("ps -fC 'python " + fileName  + "'").split()))
+            sys.exit()
+
+        if len(subprocess.getoutput("ps -fC 'python3 " + fileName  + "' | grep '" + fileName  + "'").split()) > 18:
+            print(len(subprocess.getoutput("ps -fC 'python3 " + fileName + "' | grep '" + fileName  + "'").split()))
             sys.exit()
 
         # prüfen ob die PID in der DB 0 ist

@@ -8,23 +8,23 @@ from datetime import date
 import sqlite3
 import subprocess
 
-"""
-TODOS:
-        - [] Alle benötigten Infos werden aus einer SQLite3 DB gelesen oder geschrieben
-        - [x In die SQLite3 DB aufzunehmende Werte
-            - [x] aktueller Tag
-            - [x] Batteriestatus (geladen / entladen)
-            - [x] Batterie Kapazität
-            - [x] Programm PID
-        - [] Alle Texte aufnehmen
-        - [] Fenster Hintergrund Fabe
-        - [] Button
-            - [] Hintergrund Farbe
-            - [] Schrift Farbe    
+# TODO        - [x] Alle benötigten Infos werden aus einer SQLite3 DB gelesen oder geschrieben
+# TODO        - [x] In die SQLite3 DB aufzunehmende Werte
+# TODO            - [x] aktueller Tag
+# TODO            - [x] Batteriestatus (geladen / entladen)
+# TODO            - [x] Batterie Kapazität
+# TODO            - [x] Programm PID
+# TODO        - [] Alle Texte aufnehmen
+# TODO        - [] Fenster Hintergrund Fabe
+# TODO        - [] Button
+# TODO            - [] Hintergrund Farbe
+# TODO            - [] Schrift Farbe
 
-       
-"""
-
+# TODO        - [] POPEN mit subprocess tauschen
+# TODO        - [] Die Funktion getScriptDir rausschmeissen
+# TODO        - [] Code aufräumen
+# TODO        - [] Besseren Namen für das Pojekt finden
+# TODO        - [] Kommentar Feld er stellen mit Author ... Bei anderen GIT Projekten abschauen
 
 class configuration():
     def __init__(self):

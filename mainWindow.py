@@ -273,15 +273,6 @@ class Batteriestatus(QtWidgets.QDialog, configuration):
         configuration.setDataUpdateFromTable(self, db=self.configDB, table="config", section='lastProgrammRun',
                                              key='today', value=str(getToday))
 
-
-    def getScriptDir():
-        fixed_value = 'test_get_script_path.py'
-        this_file = os.path.abspath(__file__)
-        this_file_path = os.path.dirname(this_file)
-        working_directory = os.getcwd()
-        #print(('Fester Wert: %s\nScriptpfad: %s\nScripterzeichnis: %s\nCWD: %s')
-        #      % (fixed_value, this_file, this_file_path, working_directory))
-
     def pushExit(self):
         # Set Programm PID value to 0
         #print(self.configDB)

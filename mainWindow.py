@@ -20,11 +20,11 @@ import subprocess
 # TODO            - [] Hintergrund Farbe
 # TODO            - [] Schrift Farbe
 
-# TODO        - [] POPEN mit subprocess tauschen
-# TODO        - [] Die Funktion getScriptDir rausschmeissen
-# TODO        - [] Code aufräumen
-# TODO        - [] Besseren Namen für das Pojekt finden
-# TODO        - [] Kommentar Feld er stellen mit Author ... Bei anderen GIT Projekten abschauen
+# TODO        - [ ] POPEN mit subprocess tauschen
+# TODO        - [x] Die Funktion getScriptDir rausschmeissen
+# TODO        - [ ] Code aufräumen
+# TODO        - [ ] Besseren Namen für das Pojekt finden
+# TODO        - [ ] Kommentar Feld er stellen mit Author ... Bei anderen GIT Projekten abschauen
 
 class configuration():
     def __init__(self):

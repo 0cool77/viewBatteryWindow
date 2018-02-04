@@ -23,7 +23,7 @@ import subprocess
 # TODO        - [x] POPEN mit subprocess tauschen
 # TODO        - [x] Die Funktion getScriptDir rausschmeissen
 # TODO        - [x] Code aufräumen
-# TODO        - [ ] Besseren Namen für das Pojekt finden
+# TODO        - [x] Besseren Namen für das Pojekt finden. Neuer Projekt Name "viewBatteryWindow"
 # TODO        - [ ] Kommentar Feld er stellen mit Author ... Bei anderen GIT Projekten abschauen
 
 class configuration():

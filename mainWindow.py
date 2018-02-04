@@ -8,23 +8,6 @@ from datetime import date
 import sqlite3
 import subprocess
 
-# TODO        - [x] Alle benötigten Infos werden aus einer SQLite3 DB gelesen oder geschrieben
-# TODO        - [x] In die SQLite3 DB aufzunehmende Werte
-# TODO            - [x] aktueller Tag
-# TODO            - [x] Batteriestatus (geladen / entladen)
-# TODO            - [x] Batterie Kapazität
-# TODO            - [x] Programm PID
-# TODO        - [] Alle Texte aufnehmen
-# TODO        - [] Fenster Hintergrund Fabe
-# TODO        - [] Button
-# TODO            - [] Hintergrund Farbe
-# TODO            - [] Schrift Farbe
-
-# TODO        - [x] POPEN mit subprocess tauschen
-# TODO        - [x] Die Funktion getScriptDir rausschmeissen
-# TODO        - [x] Code aufräumen
-# TODO        - [x] Besseren Namen für das Pojekt finden. Neuer Projekt Name "viewBatteryWindow"
-# TODO        - [ ] Kommentar Feld er stellen mit Author ... Bei anderen GIT Projekten abschauen
 
 class configuration():
     def __init__(self):

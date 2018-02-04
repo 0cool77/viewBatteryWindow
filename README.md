@@ -5,7 +5,7 @@ Voraussetzungen:
 - Python 3
 - PyQt5
 
-Programmaufruf per Crontab
+Programaufruf per Crontab:
 */5  *  *  *  * DISPLAY=:0 /usr/bin/python /pfad/zum/skript/mainWindow.py 30
 
 Beschreibung:
@@ -24,3 +24,9 @@ das Fenster nicht öffnet.
 
 Als Datenquelle wird eine sqlite3 Datenbank verwendet, die beim ersten Start des Skriptes im Arbeitsverzeichniss
 erstellt wird.
+
+Skript über ein Crontab starten:
+1. Shell öffnen
+2. Den Befehl "crontab -e" eingeben
+3. Crontab eintragen "Siehe "Programaufruf per Crontab"
+4. Crontab speichern

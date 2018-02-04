@@ -22,7 +22,7 @@ import subprocess
 
 # TODO        - [x] POPEN mit subprocess tauschen
 # TODO        - [x] Die Funktion getScriptDir rausschmeissen
-# TODO        - [ ] Code aufräumen
+# TODO        - [x] Code aufräumen
 # TODO        - [ ] Besseren Namen für das Pojekt finden
 # TODO        - [ ] Kommentar Feld er stellen mit Author ... Bei anderen GIT Projekten abschauen
 
@@ -107,22 +107,17 @@ class configuration():
         cursor.execute("select * from " + table + " where section = '" + section + "' and key = '" + key + "';")
         result = cursor.fetchall()
 
-        #for r in result:
-            #print(r)
-
         connection.close()
         return result
 
 
 class Batteriestatus(QtWidgets.QDialog, configuration):
     # Variable initialisieren
-    # pwd = os.getcwd()
 
     # Get script dir
     fixed_value = 'test_get_script_path.py'
     this_file = os.path.abspath(__file__)
     pwd = os.path.dirname(this_file)
-    # pwd = "/usr/local/bin/Batterieanzeige"
     configDB = pwd + "/config.db"
 
     tmpBildschirmAufloesung = subprocess.getoutput(
@@ -156,7 +151,6 @@ class Batteriestatus(QtWidgets.QDialog, configuration):
         #self.checkLastScriptRun()
         super().__init__(parent)
         self.ui = uic.loadUi(self.pwd + "/main.ui", self)
-        # self.ui = uic.loadUi(self.this_file_path + "/main.ui", self)
 
         # Create Slot
         self.ui.buttonExit.clicked.connect(self.pushExit)
@@ -164,10 +158,6 @@ class Batteriestatus(QtWidgets.QDialog, configuration):
         # Set Desktop Resolution
         getDesktopResolution = self.getBildschimAufloesung.split('x')
         getDesktopResolutionWidth = getDesktopResolution[0]
-        getDesktopResolutionHeight = getDesktopResolution[1]
-
-        # Set window position on top
-        # print(int(getDesktopResolutionHeight) / 2)
 
         # Fenster Breite auf die gesamte Bildschirmbreite erweitern
         self.setFixedWidth(int(getDesktopResolutionWidth))
@@ -244,7 +234,6 @@ class Batteriestatus(QtWidgets.QDialog, configuration):
     def setBATOstate(self):
         fobj = open(self.fileBATOstate, 'r')
         for line in fobj:
-            #BATOstate = line.rstrip()
             # Set bato state to db
             configuration.setDataUpdateFromTable(self, db=self.configDB, table="config", section='lastProgrammRun',
                                                  key='batoState', value=str(line.rstrip()))
@@ -252,9 +241,6 @@ class Batteriestatus(QtWidgets.QDialog, configuration):
 
 
     def setBATOcapcity(self):
-        # Variable initialisieren
-        # fileBATOcapacity = "/sys/class/power_supply/BAT0/capacity"
-
         # Read Batterie charge
         fobj = open(self.fileBATOcapacity, 'r')
         for line in fobj:
@@ -266,7 +252,6 @@ class Batteriestatus(QtWidgets.QDialog, configuration):
 
     # Es wird geprüft, wann das Skript das letztes mal gestartet wurde.
     def checkLastScriptRun(self):
-        setBATOcapcity = self.setBATOcapcity()
         getToday = date.today()
 
         configuration.setDataUpdateFromTable(self, db=self.configDB, table="config", section='lastProgrammRun',
@@ -274,7 +259,6 @@ class Batteriestatus(QtWidgets.QDialog, configuration):
 
     def pushExit(self):
         # Set Programm PID value to 0
-        #print(self.configDB)
         self.setDataUpdateFromTable(db=self.configDB, table="config", section='programmInfo', key='programmPID',
                                     value='0')
         # Exit App with button "buttonExit"
@@ -285,7 +269,5 @@ if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
     dialog = Batteriestatus()
     dialog.show()
-
-    # print("Count: " + dialog.getCount)
 
     sys.exit(app.exec_())

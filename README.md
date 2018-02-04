@@ -22,5 +22,5 @@ das Fenster nicht öffnet.
 4. Das Skript darf nicht schon gestartet sein
 5. Das Skript darf nicht schon gestartet sein
 
-Als Datenquelle wird eine sqlite3 Datenbank verwendet.
-
+Als Datenquelle wird eine sqlite3 Datenbank verwendet, die beim ersten Start des Skriptes im Arbeitsverzeichniss
+erstellt wird.

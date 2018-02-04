@@ -20,7 +20,7 @@ import subprocess
 # TODO            - [] Hintergrund Farbe
 # TODO            - [] Schrift Farbe
 
-# TODO        - [ ] POPEN mit subprocess tauschen
+# TODO        - [x] POPEN mit subprocess tauschen
 # TODO        - [x] Die Funktion getScriptDir rausschmeissen
 # TODO        - [ ] Code aufräumen
 # TODO        - [ ] Besseren Namen für das Pojekt finden
@@ -125,10 +125,9 @@ class Batteriestatus(QtWidgets.QDialog, configuration):
     # pwd = "/usr/local/bin/Batterieanzeige"
     configDB = pwd + "/config.db"
 
-    tmpBildschirmAufloesung = os.popen(
-        "/usr/bin/xrandr | grep -v disconnected | grep -A 1 connected | grep -v connected | awk '{print $1}'").readlines()
-    # print(len(tmpBildschirmAufloesung))
-    # print(tmpBildschirmAufloesung)
+    tmpBildschirmAufloesung = subprocess.getoutput(
+        "/usr/bin/xrandr | grep -v disconnected | grep -A 1 connected | grep -v connected | awk '{print $1}'",).split()
+    # print(tmpBildschirmAufloesung1)
 
     fileBATOcapacity = "/sys/class/power_supply/BAT0/capacity"
     fileBATOstate = "/sys/class/power_supply/BAT0/status"

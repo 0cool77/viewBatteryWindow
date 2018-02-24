@@ -17,18 +17,18 @@ erstellt wird.<br />
 Mit dem mitgegebenen Parameter, wird festgelegt zu wieviel Prozent der Akku höchstens noch geladen
 sein darf, damit das Skript weiter ausgeführt wird.
 <h3>Laufzeit Voraussetzungen</h3>
-<ul>
-	<ol>Der Akku wird nicht aufgeladen</ol>
-	<ol>Es muss als Parameter der Akku Ladestand als Zahl mitgegeben werden</ol>
-	<ol>Das Skript darf nicht schon gestartet sein</ol>
-</ul>
+<ol>
+	<li>Der Akku wird nicht aufgeladen</li>
+	<li>Es muss als Parameter der Akku Ladestand als Zahl mitgegeben werden</li>
+	<li>Das Skript darf nicht schon gestartet sein</li>
+</ol>
 <h3>Skript über ein Crontab starten</h3>
-<ul> 
-    <ol>Shell öffnen</ol>
-    <ol>Den Befehl "crontab -e" eingeben</ol>
-    <ol>Crontab eintragen<br />*/5  *  *  *  * DISPLAY=:0 /usr/bin/python /pfad/zum/skript/mainWindow.py 30</ol>
-    <ol>Crontab speichern</ol>
-</ul>
+<ol> 
+    <li>Shell öffnen</li>
+    <li>Den Befehl "crontab -e" eingeben</li>
+    <li>Crontab eintragen<br />*/5  *  *  *  * DISPLAY=:0 /usr/bin/python /pfad/zum/skript/mainWindow.py 30</li>
+    <li>Crontab speichern</li>
+</ol>
 
 <h3>Author</h3>
 Thorsten Zelt

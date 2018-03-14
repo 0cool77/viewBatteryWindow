@@ -52,6 +52,11 @@
        </item>
        <item>
         <widget class="QPushButton" name="buttonExit">
+         <property name="font">
+          <font>
+           <pointsize>16</pointsize>
+          </font>
+         </property>
          <property name="text">
           <string>Ok</string>
          </property>
@@ -67,9 +72,6 @@
     </layout>
    </item>
   </layout>
-  <zorder>horizontalLayoutWidget</zorder>
-  <zorder>verticalLayoutWidget</zorder>
-  <zorder>statusAusgabe</zorder>
  </widget>
  <resources/>
  <connections/>

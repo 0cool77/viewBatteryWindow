@@ -5,6 +5,7 @@
 	<li>Linux als Betriebssytem</li>
 	<li>Python 3</li>
 	<li>PyQt5</li>
+	<li>xorg-xrandr</li>
 </ul>
 <h3>Skript Beschreibung</h3>
 Dieses Skript öffnet ein Fenster das den aktuellen Batterie Stand anzeigt.<br />

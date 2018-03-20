@@ -102,13 +102,33 @@ class Batteriestatus(QtWidgets.QDialog, configuration):
     this_file = os.path.abspath(__file__)
     pwd = os.path.dirname(this_file)
     configDB = pwd + "/config.db"
+    pathToPowerSupply = "/sys/class/power_supply" 
+    folderBatNumber1 =  "/BAT0"
+    folderBatNumber2 =  "/BAT1"
+    folderBatNumber3 =  "/BAT2"
+    fileBATcapacity = "/capacity"
+    fileBATstatus = "/status"
+    msgFileNotFound = "File not found"
 
     tmpBildschirmAufloesung = subprocess.getoutput(
         "/usr/bin/xrandr | grep -v disconnected | grep -A 1 connected | grep -v connected | awk '{print $1}'",).split()
     # print(tmpBildschirmAufloesung1)
+   
+    if os.path.exists ( pathToPowerSupply + folderBatNumber1 ):
+        fileBATOcapacity = pathToPowerSupply + folderBatNumber1 + fileBATcapacity
+        fileBATOstate = pathToPowerSupply + folderBatNumber1 + fileBATstatus
+    elif os.path.exists ( pathToPowerSupply + folderBatNumber2 ):
+        fileBATOcapacity = pathToPowerSupply + folderBatNumber2 + fileBATcapacity
+        fileBATOstate = pathToPowerSupply + folderBatNumber2 + fileBATstatus
+    elif os.path.exists ( pathToPowerSupply + folderBatNumber3 ):
+        fileBATOcapacity = pathToPowerSupply + folderBatNumber3 + fileBATcapacity
+        fileBATOstate = pathToPowerSupply + folderBatNumber3 + fileBATstatus
+    else:
+        fileBATcapacity = msgFileNotFound 
+        fileBATstatus = msgFileNotFound
 
-    fileBATOcapacity = "/sys/class/power_supply/BAT0/capacity"
-    fileBATOstate = "/sys/class/power_supply/BAT0/status"
+    # fileBATOcapacity = "/sys/class/power_supply/BAT0/capacity"
+    # fileBATOstate = "/sys/class/power_supply/BAT0/status"
 
     if len(tmpBildschirmAufloesung) > 2:
         getBildschimAufloesung = tmpBildschirmAufloesung[len(tmpBildschirmAufloesung) - 1]
@@ -121,9 +141,17 @@ class Batteriestatus(QtWidgets.QDialog, configuration):
         #print(" ############# SQLite 3 DB für die Configuration erstellen ##################")
         if not os.path.exists(self.configDB):
             configuration.createDB(self, self.configDB)
+        
+        if self.fileBATstatus == self.msgFileNotFound: 
+            print ("Der Batterie Status konnte nicht abgefragt werden.\nDas Skript wird beendet.")
+            sys.exit()
 
         # Write batterie state to db
         self.setBATOstate()
+
+        if self.fileBATOcapacity == self.msgFileNotFound:
+            print ("Der Ladestand konnte nicht abgefragt werden.\nDas Skript wird beendet.")
+            sys.exit()
 
         # Write BATO capacity to db
         self.setBATOcapcity()

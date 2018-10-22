@@ -24,7 +24,7 @@ sein darf, damit das Skript weiter ausgeführt wird.
 	<li>Es muss als Parameter der Akku Ladestand als Zahl mitgegeben werden</li>
 	<li>Das Skript darf nicht schon gestartet sein</li>
 </ol>
-<h3>Installation</h3>
+<h3>Installation mit GIT</h3>
 Eine Shell / Terminal öffnen und die folgenden Befehle eingeben
 <pre><code>
 mkdir /home/${USERNAME}/bin && cd /home/${USERNAME}/bin/ && git clone https://github.com/0cool77/viewBatteryWindow.git && cd viewBatteryWindow 

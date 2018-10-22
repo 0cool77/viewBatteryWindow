@@ -33,7 +33,7 @@ mkdir /home/${USERNAME}/bin && cd /home/${USERNAME}/bin/ && git clone https://gi
 <ol> 
     <li>Shell öffnen</li>
     <li>Den Befehl "crontab -e" eingeben</li>
-    <li>Crontab eintragen<br />*/5  *  *  *  * DISPLAY=:0 /usr/bin/python /Pfad/zum/Skript/mainWindow.py 30</li>
+    <li>Crontab eintragen<br /><pre><code>*/5  *  *  *  * DISPLAY=:0 /usr/bin/python /Pfad/zum/Skript/mainWindow.py 30</code></pre></li>
     <li>Crontab speichern</li>
 </ol>
 

@@ -26,9 +26,9 @@ sein darf, damit das Skript weiter ausgeführt wird.
 </ol>
 <h3>Installation</h3>
 Eine Shell / Terminal öffnen und die folgenden Befehle eingeben
-<div style="background-color:lightgray; border-color:#000000;border-width:1px;border-style:solid">
+<pre><code>
 mkdir /home/${USERNAME}/bin && cd /home/${USERNAME}/bin/ && git clone https://github.com/0cool77/viewBatteryWindow.git && cd viewBatteryWindow 
-</div>
+</code></pre>
 <h3>Skript über ein Crontab starten</h3>
 <ol> 
     <li>Shell öffnen</li>

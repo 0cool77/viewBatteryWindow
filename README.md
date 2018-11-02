@@ -9,7 +9,7 @@
     <li>git (wenn die Installation über GIT erfolgen soll)</li>
 </ul>
 <h3>Skript Beschreibung</h3>
-Dieses Skript öffnet ein Fenster das den aktuellen Batterie Stand anzeigt.<br />
+Dieses Skript öffnet ein Fenster, dass die maximale Breite der Monitor Auflösung als Breite hat, als Inhalt wird der Batterie Stand anzeigt.<br />
 Als Datenquelle wird eine sqlite3 Datenbank verwendet, die beim ersten Start des Skriptes im Skript Verzeichnis
 erstellt wird.<br />
 <h3>Programmaufruf per Crontab:</h3>

@@ -185,7 +185,6 @@ class Batteriestatus(QtWidgets.QDialog, configuration):
         self.statusAusgabe.setText(
             "<font color='white'>Die Batterie hat noch " + str(self.BATOcapacity[0][3]) + "% Ladung</font>")
 
-
         # Set window background color
         self.setAutoFillBackground(True)
         getColorPalette = self.palette()
@@ -194,7 +193,6 @@ class Batteriestatus(QtWidgets.QDialog, configuration):
 
         # Set button "buttonExit" Color
         self.buttonExit.setStyleSheet("background-color: black; color: white")
-
 
     def checkScriptRun(self):
         BATOstate =  self.getDataFromTable(db=self.configDB, table='config', section='lastProgrammRun',
@@ -223,7 +221,8 @@ class Batteriestatus(QtWidgets.QDialog, configuration):
             sys.exit()
 
         # PID aus DB auslesen
-        ScriptPIDinDB = self.getDataFromTable(db=self.configDB, table='config', section='programmInfo', key='programmPID')
+        ScriptPIDinDB = self.getDataFromTable(db=self.configDB, table='config', section='programmInfo',
+                                              key='programmPID')
 
         # Mehrfache Skript Ausführung verhindern
         if len(subprocess.getoutput("ps -fC 'python " + fileName  + "'").split()) > 18:

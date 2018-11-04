@@ -75,10 +75,11 @@ class configuration():
         connection = sqlite3.connect(db)
         cursor = connection.cursor()
 
-        sql_statment = "UPDATE " + table + " SET value  = '" + value + "' WHERE key = '" + key + "' AND  section = '" + section + "';"
-        #print("SQL: " + sql_statment)
+        sql_statement = "UPDATE " + table + " SET value  = '" + value + "' WHERE key = '" + key + \
+                       "' AND  section = '" + section + "';"
+        #print("SQL: " + sql_statement)
 
-        cursor.execute(sql_statment)
+        cursor.execute(sql_statement)
 
         connection.commit()
         connection.close()
@@ -177,8 +178,8 @@ class Batteriestatus(QtWidgets.QDialog, configuration):
         self.setWindowFlags(QtCore.Qt.CustomizeWindowHint)
 
         # Get BATO capcity form db
-        self.BATOcapacity = configuration.getDataFromTable(self, self.configDB, table='config', section='lastProgrammRun',
-                                                           key='batoCapacity')
+        self.BATOcapacity = configuration.getDataFromTable(self, self.configDB, table='config',
+                                                           section='lastProgrammRun', key='batoCapacity')
 
         # Set label Text "statusAusgabe"
         self.statusAusgabe.setText(
@@ -196,8 +197,10 @@ class Batteriestatus(QtWidgets.QDialog, configuration):
 
 
     def checkScriptRun(self):
-        BATOstate =  self.getDataFromTable(db=self.configDB, table='config', section='lastProgrammRun', key='batoState')
-        BATOcapacity = self.getDataFromTable(db=self.configDB, table='config', section='lastProgrammRun', key='batoCapacity') 
+        BATOstate =  self.getDataFromTable(db=self.configDB, table='config', section='lastProgrammRun',
+                                           key='batoState')
+        BATOcapacity = self.getDataFromTable(db=self.configDB, table='config', section='lastProgrammRun',
+                                             key='batoCapacity')
         fileName = __file__.split('/')
         fileName = fileName[len(fileName)-1]
 
@@ -205,7 +208,8 @@ class Batteriestatus(QtWidgets.QDialog, configuration):
             print("Skript wird beendet.\nKeine Batterie Entladung")
             sys.exit()
 
-        # Prüfen ob ein Argument mitgegeben wurde das den Batterie Stand angibt der maximal sein darf, damit das Skript startet
+        # Prüfen ob ein Argument mitgegeben wurde das den Batterie Stand angibt der maximal sein darf,
+        # damit das Skript startet
         if len(sys.argv) != 2:
             print("example: \n\t" + sys.argv[0] + " Prozentzahl")
             sys.exit()
@@ -249,7 +253,6 @@ class Batteriestatus(QtWidgets.QDialog, configuration):
             configuration.setDataUpdateFromTable(self, db=self.configDB, table="config", section='lastProgrammRun',
                                                  key='batoState', value=str(line.rstrip()))
         fobj.close()
-
 
     def setBATOcapcity(self):
         # Read Batterie charge

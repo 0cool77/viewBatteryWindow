@@ -75,10 +75,11 @@ class configuration():
         connection = sqlite3.connect(db)
         cursor = connection.cursor()
 
-        sql_statment = "UPDATE " + table + " SET value  = '" + value + "' WHERE key = '" + key + "' AND  section = '" + section + "';"
-        #print("SQL: " + sql_statment)
+        sql_statement = "UPDATE " + table + " SET value  = '" + value + "' WHERE key = '" + key + \
+                       "' AND  section = '" + section + "';"
+        #print("SQL: " + sql_statement)
 
-        cursor.execute(sql_statment)
+        cursor.execute(sql_statement)
 
         connection.commit()
         connection.close()
@@ -102,13 +103,33 @@ class Batteriestatus(QtWidgets.QDialog, configuration):
     this_file = os.path.abspath(__file__)
     pwd = os.path.dirname(this_file)
     configDB = pwd + "/config.db"
+    pathToPowerSupply = "/sys/class/power_supply" 
+    folderBatNumber1 =  "/BAT0"
+    folderBatNumber2 =  "/BAT1"
+    folderBatNumber3 =  "/BAT2"
+    fileBATcapacity = "/capacity"
+    fileBATstatus = "/status"
+    msgFileNotFound = "File not found"
 
     tmpBildschirmAufloesung = subprocess.getoutput(
         "/usr/bin/xrandr | grep -v disconnected | grep -A 1 connected | grep -v connected | awk '{print $1}'",).split()
     # print(tmpBildschirmAufloesung1)
+   
+    if os.path.exists ( pathToPowerSupply + folderBatNumber1 ):
+        fileBATOcapacity = pathToPowerSupply + folderBatNumber1 + fileBATcapacity
+        fileBATOstate = pathToPowerSupply + folderBatNumber1 + fileBATstatus
+    elif os.path.exists ( pathToPowerSupply + folderBatNumber2 ):
+        fileBATOcapacity = pathToPowerSupply + folderBatNumber2 + fileBATcapacity
+        fileBATOstate = pathToPowerSupply + folderBatNumber2 + fileBATstatus
+    elif os.path.exists ( pathToPowerSupply + folderBatNumber3 ):
+        fileBATOcapacity = pathToPowerSupply + folderBatNumber3 + fileBATcapacity
+        fileBATOstate = pathToPowerSupply + folderBatNumber3 + fileBATstatus
+    else:
+        fileBATcapacity = msgFileNotFound 
+        fileBATstatus = msgFileNotFound
 
-    fileBATOcapacity = "/sys/class/power_supply/BAT0/capacity"
-    fileBATOstate = "/sys/class/power_supply/BAT0/status"
+    # fileBATOcapacity = "/sys/class/power_supply/BAT0/capacity"
+    # fileBATOstate = "/sys/class/power_supply/BAT0/status"
 
     if len(tmpBildschirmAufloesung) > 2:
         getBildschimAufloesung = tmpBildschirmAufloesung[len(tmpBildschirmAufloesung) - 1]
@@ -121,9 +142,17 @@ class Batteriestatus(QtWidgets.QDialog, configuration):
         #print(" ############# SQLite 3 DB für die Configuration erstellen ##################")
         if not os.path.exists(self.configDB):
             configuration.createDB(self, self.configDB)
+        
+        if self.fileBATstatus == self.msgFileNotFound: 
+            print ("Der Batterie Status konnte nicht abgefragt werden.\nDas Skript wird beendet.")
+            sys.exit()
 
         # Write batterie state to db
         self.setBATOstate()
+
+        if self.fileBATOcapacity == self.msgFileNotFound:
+            print ("Der Ladestand konnte nicht abgefragt werden.\nDas Skript wird beendet.")
+            sys.exit()
 
         # Write BATO capacity to db
         self.setBATOcapcity()
@@ -149,13 +178,12 @@ class Batteriestatus(QtWidgets.QDialog, configuration):
         self.setWindowFlags(QtCore.Qt.CustomizeWindowHint)
 
         # Get BATO capcity form db
-        self.BATOcapacity = configuration.getDataFromTable(self, self.configDB, table='config', section='lastProgrammRun',
-                                                           key='batoCapacity')
+        self.BATOcapacity = configuration.getDataFromTable(self, self.configDB, table='config',
+                                                           section='lastProgrammRun', key='batoCapacity')
 
         # Set label Text "statusAusgabe"
         self.statusAusgabe.setText(
             "<font color='white'>Die Batterie hat noch " + str(self.BATOcapacity[0][3]) + "% Ladung</font>")
-
 
         # Set window background color
         self.setAutoFillBackground(True)
@@ -166,10 +194,11 @@ class Batteriestatus(QtWidgets.QDialog, configuration):
         # Set button "buttonExit" Color
         self.buttonExit.setStyleSheet("background-color: black; color: white")
 
-
     def checkScriptRun(self):
-        BATOstate =  self.getDataFromTable(db=self.configDB, table='config', section='lastProgrammRun', key='batoState')
-        BATOcapacity = self.getDataFromTable(db=self.configDB, table='config', section='lastProgrammRun', key='batoCapacity') 
+        BATOstate =  self.getDataFromTable(db=self.configDB, table='config', section='lastProgrammRun',
+                                           key='batoState')
+        BATOcapacity = self.getDataFromTable(db=self.configDB, table='config', section='lastProgrammRun',
+                                             key='batoCapacity')
         fileName = __file__.split('/')
         fileName = fileName[len(fileName)-1]
 
@@ -177,7 +206,8 @@ class Batteriestatus(QtWidgets.QDialog, configuration):
             print("Skript wird beendet.\nKeine Batterie Entladung")
             sys.exit()
 
-        # Prüfen ob ein Argument mitgegeben wurde das den Batterie Stand angibt der maximal sein darf, damit das Skript startet
+        # Prüfen ob ein Argument mitgegeben wurde das den Batterie Stand angibt der maximal sein darf,
+        # damit das Skript startet
         if len(sys.argv) != 2:
             print("example: \n\t" + sys.argv[0] + " Prozentzahl")
             sys.exit()
@@ -191,7 +221,8 @@ class Batteriestatus(QtWidgets.QDialog, configuration):
             sys.exit()
 
         # PID aus DB auslesen
-        ScriptPIDinDB = self.getDataFromTable(db=self.configDB, table='config', section='programmInfo', key='programmPID')
+        ScriptPIDinDB = self.getDataFromTable(db=self.configDB, table='config', section='programmInfo',
+                                              key='programmPID')
 
         # Mehrfache Skript Ausführung verhindern
         if len(subprocess.getoutput("ps -fC 'python " + fileName  + "'").split()) > 18:
@@ -221,7 +252,6 @@ class Batteriestatus(QtWidgets.QDialog, configuration):
             configuration.setDataUpdateFromTable(self, db=self.configDB, table="config", section='lastProgrammRun',
                                                  key='batoState', value=str(line.rstrip()))
         fobj.close()
-
 
     def setBATOcapcity(self):
         # Read Batterie charge

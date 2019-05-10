@@ -104,9 +104,9 @@ class Batteriestatus(QtWidgets.QDialog, configuration):
     pwd = os.path.dirname(this_file)
     configDB = pwd + "/config.db"
     pathToPowerSupply = "/sys/class/power_supply" 
-    folderBatNumber1 =  "/BAT0"
-    folderBatNumber2 =  "/BAT1"
-    folderBatNumber3 =  "/BAT2"
+    folderBatNumber1 = "/BAT0"
+    folderBatNumber2 = "/BAT1"
+    folderBatNumber3 = "/BAT2"
     fileBATcapacity = "/capacity"
     fileBATstatus = "/status"
     msgFileNotFound = "File not found"

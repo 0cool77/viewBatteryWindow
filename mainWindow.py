@@ -96,6 +96,13 @@ class configuration():
 
 
 class Batteriestatus(QtWidgets.QDialog, configuration):
+    """
+        Für die Batterieabfrage das Tool ACPI verwenden
+        - acpi -i liefert alle Infos die benötigt werden
+            - acpi -i | head -n1 -> Letzte Zeile lesen
+            - acpi -i | tail -1 -> Erste Zeile lesen
+    """
+
     # Variable initialisieren
 
     # Get script dir
@@ -139,7 +146,7 @@ class Batteriestatus(QtWidgets.QDialog, configuration):
     def __init__(self, parent=None):
         configuration.__init__(self)
 
-        #print(" ############# SQLite 3 DB für die Configuration erstellen ##################")
+        # print(" ############# SQLite 3 DB für die Configuration erstellen ##################")
         if not os.path.exists(self.configDB):
             configuration.createDB(self, self.configDB)
         
@@ -154,6 +161,7 @@ class Batteriestatus(QtWidgets.QDialog, configuration):
             print ("Der Ladestand konnte nicht abgefragt werden.\nDas Skript wird beendet.")
             sys.exit()
 
+
         # Write BATO capacity to db
         self.setBATOcapcity()
 
@@ -163,7 +171,7 @@ class Batteriestatus(QtWidgets.QDialog, configuration):
         self.checkLastScriptRun()
         super().__init__(parent)
         self.ui = uic.loadUi(self.pwd + "/main.ui", self)
-
+        
         # Create Slot
         self.ui.buttonExit.clicked.connect(self.pushExit)
 
@@ -206,13 +214,13 @@ class Batteriestatus(QtWidgets.QDialog, configuration):
             print("Skript wird beendet.\nKeine Batterie Entladung")
             sys.exit()
 
-        # Prüfen ob ein Argument mitgegeben wurde das den Batterie Stand angibt der maximal sein darf,
-        # damit das Skript startet
+         # Prüfen ob ein Argument mitgegeben wurde das den Batterie Stand angibt der maximal sein darf,
+         # damit das Skript startet
         if len(sys.argv) != 2:
             print("example: \n\t" + sys.argv[0] + " Prozentzahl")
             sys.exit()
 
-        try:        
+        try:
             if int(sys.argv[1]) <= int(BATOcapacity[0][3]):
                 print("Batterie zu viel geladen: " + str(BATOcapacity[0][3]))
                 sys.exit()
@@ -225,7 +233,7 @@ class Batteriestatus(QtWidgets.QDialog, configuration):
                                               key='programmPID')
 
         # Mehrfache Skript Ausführung verhindern
-        if len(subprocess.getoutput("ps -fC 'python " + fileName  + "'").split()) > 18:
+        if len(subprocess.getoutput("ps -fC 'python " + fileName  + "' | grep '" + fileName + "'").split()) > 18:
             print(len(subprocess.getoutput("ps -fC 'python " + fileName  + "'").split()))
             sys.exit()
 
